@@ -50,3 +50,6 @@ __pycache__/
 node_modules/
 dist/
 *.tsbuildinfo
+
+# Claude Code instruction file (local only, not part of the submission)
+CLAUDE.md
