@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campus Customs resolved board</title>
+<style>
+  :root { --ink: #00356B; --ink-soft: #3D5F86; --desk: #D9E0E8; --rule: #B7C4D4; --paid: #1F6E4A; --stamp: #B3261E;
+          --serif: Charter, "Iowan Old Style", Georgia, serif; --form: "Avenir Next Condensed", "Avenir Next", "Arial Narrow", sans-serif; }
+  * { box-sizing: border-box; }
+  html { background: var(--desk); }
+  body { margin: 0; padding: 40px 20px 80px; color: var(--ink); font: 17px/1.6 var(--serif); }
+  main { max-width: 1120px; margin: 0 auto; }
+  h1 { font: 600 2.4rem/1.05 var(--form); margin: 0; }
+  .lede { color: var(--ink-soft); max-width: 70ch; margin: 8px 0 0; }
+  .totals { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 8px; }
+  .totals div { background: #fff; border: 1px solid var(--rule); border-radius: 6px; padding: 8px 14px; }
+  .totals span { display: block; font: 500 0.85rem/1.2 var(--form); color: var(--ink-soft); }
+  .totals b { font: 600 1.3rem/1.3 var(--form); }
+  nav { margin: 18px 0 0; display: flex; gap: 14px; flex-wrap: wrap; font-family: var(--form); }
+  nav a { color: var(--ink); }
+  figure { margin: 34px 0 0; background: #fff; border: 1px solid var(--rule); border-radius: 6px; padding: 20px 22px 22px; }
+  figure h2 { font: 600 1.6rem/1.2 var(--form); margin: 0; }
+  .resolved { display: inline-block; margin-left: 10px; font: 700 0.95rem/1 var(--form); color: var(--paid); border: 2px solid var(--paid); border-radius: 3px; padding: 4px 8px; transform: rotate(-2deg); vertical-align: 4px; }
+  figcaption { margin: 8px 0 14px; max-width: 80ch; }
+  figcaption .cash { color: var(--stamp); font-weight: 700; }
+  img { display: block; width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 4px; }
+  a:focus-visible { outline: 3px solid var(--stamp); outline-offset: 2px; }
+  @media (max-width: 640px) { body { padding: 20px 10px 60px; } figure { padding: 14px; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Resolved board</h1>
+  <p class="lede">Real screenshots of the React dashboard (localhost:5173), each taken at the moment the agent team’s final run on that ticket finished, during the Problem 9 run with <code>gpt-6-luna</code>. Each shows the ticket marked resolved by the boss, the till read from <code>cash_accounts</code>, the live floor log and the shift report.</p>
+
+  <div class="totals">
+    <div><span>Starting checking</span><b>$3,400.00</b></div>
+    <div><span>Approved payments</span><b>−$3,240.00</b></div>
+    <div><span>Ending checking (verified)</span><b>$160.00</b></div>
+    <div><span>Resolved</span><b>3 of 3</b></div>
+  </div>
+  <nav aria-label="Tickets"><a href="#t101">Ticket 101</a><a href="#t102">Ticket 102</a><a href="#t103">Ticket 103</a></nav>
+
+  <figure id="t101">
+    <h2>101 Bulldog tee, size S<span class="resolved">Resolved</span></h2>
+    <figcaption>Run <code>7b647c0d2349</code>. Invoice 501 was paid after your approval of PR-1 (<span class="cash">−$840.00</span>). Size S is still 0, so nothing shipped. Customer draft D-1 and vendor draft D-4 are waiting for a human to send.</figcaption>
+    <img src="screenshots/ticket_101_resolved.png" alt="Dashboard after ticket 101 resolved: till at $160.00, tickets 101 and 102 resolved with 103 still in progress, ticket 101 file with notes and drafts D-1 and D-4, and the shift report.">
+  </figure>
+
+  <figure id="t102">
+    <h2>102 Rent due<span class="resolved">Resolved</span></h2>
+    <figcaption>Run <code>1bc8f481358d</code>. Rent on lease 1 was paid after your approval of PR-2 (<span class="cash">−$2,400.00</span>), and the next rent is due 2026-10-02. When this was taken, 101 was still in progress and 103 hadn’t been run yet.</figcaption>
+    <img src="screenshots/ticket_102_resolved.png" alt="Dashboard after ticket 102 resolved: till at $160.00 with two payments on the tape, ticket 102 resolved, 101 in progress and 103 open, and the shift report from facilities.">
+  </figure>
+
+  <figure id="t103">
+    <h2>103 Bulk hoodie discount<span class="resolved">Resolved</span></h2>
+    <figcaption>Run <code>df4457a353c0</code>. The boss approved 15% off: $49.30 each, $986.00 for 20. Only 8 are in stock, with no restock placed. Quote draft D-3 is waiting to be sent, and D-2 is outdated. No cash moved.</figcaption>
+    <img src="screenshots/ticket_103_resolved.png" alt="Dashboard after ticket 103 resolved: all three slips resolved, ticket 103 file with drafts D-2 and D-3, and the shift report from accounting and inventory.">
+  </figure>
+</main>
+</body>
+</html>

@@ -1,0 +1,52 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Databases: only the two required files under data/ are committed
+# (original + working copy, so graders can run the app). Everything else in data/
+# (local snapshots, temp copies) and any other database file stays out.
+data/*
+!data/campus_customs.db
+!data/campus_customs_new.db
+*.db
+!data/campus_customs.db
+!data/campus_customs_new.db
+*.db-journal
+*.sqlite
+*.sqlite3
+*-wal
+*-shm
+*.zip
+
+# Runtime state written by the MCP server during runs (recreated as needed; reset clears it)
+output/drafts.json
+output/payment_requests.json
+*.json.tmp
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Logs, temp, OS/editor files
+*.log
+*.tmp
+.DS_Store
+.vscode/
+.idea/
+
+# Local tool settings
+.claude/
+
+# Node / Vite (frontend/)
+node_modules/
+dist/
+*.tsbuildinfo

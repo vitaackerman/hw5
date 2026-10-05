@@ -1,0 +1,69 @@
+{
+  "run": {
+    "date": "2026-10-05",
+    "desk_date": "2026-08-31",
+    "model": "gpt-6-luna",
+    "flow": "React dashboard (localhost:5173) -> FastAPI POST /api/tickets/{id}/run (localhost:8000) -> PydanticAI team -> MCP server -> data/campus_customs_new.db",
+    "reset_before_run": "POST /api/reset; working DB sha256 matched the original",
+    "starting_checking_balance": 3400.0,
+    "ending_checking_balance": 160.0,
+    "ending_balance_source": "SELECT balance FROM cash_accounts WHERE name = 'checking' -> 160.0 (date 2026-08-31)",
+    "resolved_definition": "Resolved once everything the team controls is done and rechecked in the database (payments approved and recorded, needed drafts saved, decision noted); outside waits such as deliveries, customer replies or a human sending drafts are named in the resolving note."
+  },
+  "tickets": [
+    {
+      "id": 101,
+      "type": "customer_order",
+      "final_status": "resolved",
+      "run_ids": ["6a5a81cfb41c", "8bea79de4fb5", "7b647c0d2349"],
+      "outcome": "Size S tee was out of stock (0) and blocked by unpaid rush reprint invoice 501. The invoice was paid after human approval. Nothing shipped because stock is still 0. The customer reply (D-1) and a vendor status check (D-4) were drafted for a human to send. The ticket was resolved with the restock (estimated around 2026-09-05, not confirmed) named as an outside wait.",
+      "agents": {
+        "boss": "Read and rechecked the ticket and stock, delegated to inventory, accounting and customer service, set waiting_on_approval, kept in_progress after approval while stock was 0, then resolved once team actions were complete.",
+        "inventory": "Confirmed CC-TEE-WHITE size S = 0 in Aisle B, identified invoice 501 as the restock and Bulldog Print Co's 5-day lead time, did not ship, and drafted vendor status message D-4.",
+        "accounting": "Checked cash and obligations ($3,400 against $840 + $2,400) and created payment request PR-1 for invoice 501.",
+        "customer_service": "Drafted customer email D-1 to Tauhid Zaman with the restock estimate and the sizes in stock, without promising a ship date."
+      },
+      "mcp_tools_used": ["get_ticket", "check_stock", "get_cash_and_obligations", "request_payment", "create_draft", "update_ticket"],
+      "human_approvals": [
+        {"request_id": "PR-1", "amount": 840.0, "for": "Bulldog Print Co invoice 501 (rush reprint CC-TEE-WHITE S)", "requested_by": "accounting", "approved_by": "Claire Levita", "via": "dashboard sign-off tray", "payment_id": 1}
+      ],
+      "drafts_for_human": ["D-1 customer_email to Tauhid Zaman", "D-4 vendor_message to Bulldog Print Co"],
+      "cash_change": -840.0
+    },
+    {
+      "id": 102,
+      "type": "rent_notice",
+      "final_status": "resolved",
+      "run_ids": ["6e52812f55a4", "1bc8f481358d"],
+      "outcome": "The $2,400 rent on lease 1, due 2026-09-02, was verified, requested, approved by a human and recorded as payment #2. The lease's next_due moved to 2026-10-02. The ticket was resolved after a recheck showed nothing pending.",
+      "agents": {
+        "boss": "Read the ticket, delegated to facilities and accounting, set waiting_on_approval, then rechecked the ticket and cash after approval and resolved it.",
+        "facilities": "Verified the lease obligation ($2,400 to Elm City Properties, due 2026-09-02, unpaid), checked cash, created payment request PR-2, and confirmed payment #2 on recheck.",
+        "accounting": "Cross-checked cash: $2,560 covers rent and leaves $160."
+      },
+      "mcp_tools_used": ["get_ticket", "get_cash_and_obligations", "request_payment", "update_ticket"],
+      "human_approvals": [
+        {"request_id": "PR-2", "amount": 2400.0, "for": "Rent, lease 1 (Chapel Street shop, Elm City Properties), due 2026-09-02", "requested_by": "facilities", "approved_by": "Claire Levita", "via": "dashboard sign-off tray", "payment_id": 2}
+      ],
+      "drafts_for_human": [],
+      "cash_change": -2400.0
+    },
+    {
+      "id": 103,
+      "type": "price_override",
+      "final_status": "resolved",
+      "run_ids": ["b602b7c8541d", "df4457a353c0"],
+      "outcome": "The boss approved 15% off 20 navy hoodies, size M: $49.30 each, $986.00 total, against a $22 unit cost. Only 8 are in stock (12 short) and no restock is placed. Quote draft D-3 includes that availability caveat; D-2 is outdated. No payment was needed. The ticket was resolved with the club's reply and any restock named as outside waits.",
+      "agents": {
+        "boss": "Delegated pricing and stock, chose the 15% discount, passed the approved price to customer service, rechecked the ticket and stock, and resolved it.",
+        "accounting": "Ran get_pricing at 0%, 62% and 15%: $22 cost, $58 list, 62.1% deepest discount before cost, and 15% leaving a $27.30 margin per hoodie.",
+        "inventory": "Confirmed size M = 8 (12 short), no restock invoice, and Bulldog Print Co's 5-day lead time, giving an estimate only if a reprint is ordered.",
+        "customer_service": "Drafted D-2 while the discount was still pending (after its delegation to the boss was refused as a cycle), then D-3 with the approved quote and an ETA that isn't guaranteed."
+      },
+      "mcp_tools_used": ["get_ticket", "get_pricing", "check_stock", "create_draft", "update_ticket"],
+      "human_approvals": [],
+      "drafts_for_human": ["D-3 customer_email to Yale AI Club (send this one)", "D-2 customer_email to Yale AI Club (outdated, do not send)"],
+      "cash_change": 0.0
+    }
+  ]
+}

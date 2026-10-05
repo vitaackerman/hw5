@@ -1,0 +1,8 @@
+# Install from the HW5 folder: .venv/bin/python -m pip install -r requirements.txt
+# Tested with Python 3.14.7 and the versions noted.
+fastmcp>=2.0                             # MCP server and client (tested 4.0.11)
+pydantic-ai-slim[openai,mcp]>=2.54,<3    # agents + OpenAI Responses API via Portkey + MCP toolset (tested 2.54.0)
+pydantic>=2.7                            # structured agent outputs (tested 2.13.5)
+python-dotenv>=1.0.1                     # loads PORTKEY_API_KEY from Coding/.env (tested 1.2.4)
+fastapi>=0.115                           # dashboard API in backend/main.py (tested 0.142.2)
+uvicorn[standard]>=0.30                  # runs the API: cd backend && uvicorn main:app --reload --port 8000 (tested 0.54.0)

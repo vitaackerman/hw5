@@ -1,0 +1,529 @@
+{
+  "transport": "MCP stdio server 'campus-customs' from .mcp.json (.venv/bin/python mcp_server/server.py); tools called via the MCP connection in Claude Code, not imported",
+  "verification": "Read-only (sqlite URI mode=ro) queries against data/campus_customs_new.db; expected values recomputed independently and compared field by field",
+  "results": [
+    {
+      "ticket": 101,
+      "prompt": "ticket 101 needs a white bulldog tee in size S. is it in stock and is a restock on the way?",
+      "mcp_tool": "mcp__campus-customs__check_stock",
+      "arguments": {
+        "sku": "CC-TEE-WHITE",
+        "size": "S"
+      },
+      "tool_output": {
+        "as_of": "2026-08-31",
+        "found": true,
+        "item": {
+          "sku": "CC-TEE-WHITE",
+          "name": "Classic Bulldog Tee",
+          "size": "S",
+          "qty": 0,
+          "location": "Aisle B"
+        },
+        "in_stock": false,
+        "all_sizes": [
+          {
+            "size": "S",
+            "qty": 0,
+            "location": "Aisle B"
+          },
+          {
+            "size": "M",
+            "qty": 5,
+            "location": "Aisle B"
+          },
+          {
+            "size": "L",
+            "qty": 3,
+            "location": "Aisle B"
+          },
+          {
+            "size": "XL",
+            "qty": 2,
+            "location": "Aisle B"
+          }
+        ],
+        "restock_invoices": [
+          {
+            "id": 501,
+            "amount": 840,
+            "due_date": "2026-08-28",
+            "status": "open",
+            "description": "Rush reprint CC-TEE-WHITE S",
+            "vendor_id": 1,
+            "vendor_name": "Bulldog Print Co",
+            "lead_days": 5,
+            "days_until_due": -3
+          }
+        ],
+        "vendors": [
+          {
+            "id": 1,
+            "name": "Bulldog Print Co",
+            "specialty": "apparel reprint",
+            "lead_days": 5
+          },
+          {
+            "id": 2,
+            "name": "Elm City Gifts",
+            "specialty": "mugs and small goods",
+            "lead_days": 3
+          },
+          {
+            "id": 3,
+            "name": "QuickShip CT",
+            "specialty": "local courier",
+            "lead_days": 1
+          }
+        ]
+      },
+      "matched_database": true,
+      "checks": [
+        {
+          "field": "as_of",
+          "tool_value": "2026-08-31",
+          "db_value": "2026-08-31",
+          "query": "SELECT date_today FROM desk",
+          "match": true
+        },
+        {
+          "field": "item",
+          "tool_value": {
+            "sku": "CC-TEE-WHITE",
+            "name": "Classic Bulldog Tee",
+            "size": "S",
+            "qty": 0,
+            "location": "Aisle B"
+          },
+          "db_value": {
+            "sku": "CC-TEE-WHITE",
+            "name": "Classic Bulldog Tee",
+            "size": "S",
+            "qty": 0,
+            "location": "Aisle B"
+          },
+          "query": "SELECT sku,name,size,qty,location FROM inventory WHERE sku='CC-TEE-WHITE' AND size='S'",
+          "match": true
+        },
+        {
+          "field": "in_stock",
+          "tool_value": false,
+          "db_value": false,
+          "query": "SELECT sku,name,size,qty,location FROM inventory WHERE sku='CC-TEE-WHITE' AND size='S' -> qty > 0",
+          "match": true
+        },
+        {
+          "field": "all_sizes",
+          "tool_value": {
+            "S": {
+              "size": "S",
+              "qty": 0,
+              "location": "Aisle B"
+            },
+            "M": {
+              "size": "M",
+              "qty": 5,
+              "location": "Aisle B"
+            },
+            "L": {
+              "size": "L",
+              "qty": 3,
+              "location": "Aisle B"
+            },
+            "XL": {
+              "size": "XL",
+              "qty": 2,
+              "location": "Aisle B"
+            }
+          },
+          "db_value": {
+            "L": {
+              "size": "L",
+              "qty": 3,
+              "location": "Aisle B"
+            },
+            "M": {
+              "size": "M",
+              "qty": 5,
+              "location": "Aisle B"
+            },
+            "S": {
+              "size": "S",
+              "qty": 0,
+              "location": "Aisle B"
+            },
+            "XL": {
+              "size": "XL",
+              "qty": 2,
+              "location": "Aisle B"
+            }
+          },
+          "query": "SELECT size,qty,location FROM inventory WHERE sku='CC-TEE-WHITE' (compared by size)",
+          "match": true
+        },
+        {
+          "field": "restock_invoices",
+          "tool_value": [
+            {
+              "id": 501,
+              "amount": 840,
+              "due_date": "2026-08-28",
+              "status": "open",
+              "description": "Rush reprint CC-TEE-WHITE S",
+              "vendor_id": 1,
+              "vendor_name": "Bulldog Print Co",
+              "lead_days": 5,
+              "days_until_due": -3
+            }
+          ],
+          "db_value": [
+            {
+              "id": 501,
+              "amount": 840.0,
+              "due_date": "2026-08-28",
+              "status": "open",
+              "description": "Rush reprint CC-TEE-WHITE S",
+              "vendor_id": 1,
+              "vendor_name": "Bulldog Print Co",
+              "lead_days": 5,
+              "days_until_due": -3
+            }
+          ],
+          "query": "SELECT i.id,i.amount,i.due_date,i.status,i.description,i.vendor_id,v.name AS vendor_name,v.lead_days FROM invoices i JOIN vendors v ON v.id=i.vendor_id WHERE i.description LIKE '%CC-TEE-WHITE%' OR i.id IN (SELECT invoice_id FROM tickets WHERE sku='CC-TEE-WHITE' AND invoice_id IS NOT NULL) (+ days_until_due from desk date)",
+          "match": true
+        },
+        {
+          "field": "vendors",
+          "tool_value": [
+            {
+              "id": 1,
+              "name": "Bulldog Print Co",
+              "specialty": "apparel reprint",
+              "lead_days": 5
+            },
+            {
+              "id": 2,
+              "name": "Elm City Gifts",
+              "specialty": "mugs and small goods",
+              "lead_days": 3
+            },
+            {
+              "id": 3,
+              "name": "QuickShip CT",
+              "specialty": "local courier",
+              "lead_days": 1
+            }
+          ],
+          "db_value": [
+            {
+              "id": 1,
+              "name": "Bulldog Print Co",
+              "specialty": "apparel reprint",
+              "lead_days": 5
+            },
+            {
+              "id": 2,
+              "name": "Elm City Gifts",
+              "specialty": "mugs and small goods",
+              "lead_days": 3
+            },
+            {
+              "id": 3,
+              "name": "QuickShip CT",
+              "specialty": "local courier",
+              "lead_days": 1
+            }
+          ],
+          "query": "SELECT id,name,specialty,lead_days FROM vendors ORDER BY id",
+          "match": true
+        }
+      ]
+    },
+    {
+      "ticket": 102,
+      "prompt": "ticket 102 says rent is due in 2 days. what do we owe and how much cash do we have?",
+      "mcp_tool": "mcp__campus-customs__get_cash_and_obligations",
+      "arguments": {},
+      "tool_output": {
+        "as_of": "2026-08-31",
+        "cash_accounts": [
+          {
+            "name": "checking",
+            "balance": 3400,
+            "date": "2026-08-31"
+          }
+        ],
+        "total_cash": 3400,
+        "unpaid_invoices": [
+          {
+            "id": 501,
+            "amount": 840,
+            "due_date": "2026-08-28",
+            "status": "open",
+            "description": "Rush reprint CC-TEE-WHITE S",
+            "vendor_name": "Bulldog Print Co",
+            "days_until_due": -3
+          }
+        ],
+        "lease_rent_due": [
+          {
+            "id": 1,
+            "space_name": "Chapel Street shop",
+            "landlord": "Elm City Properties",
+            "monthly_rent": 2400,
+            "next_due": "2026-09-02",
+            "notes": null,
+            "days_until_due": 2
+          }
+        ],
+        "total_obligations": 3240,
+        "cash_after_all_obligations": 160,
+        "payments_recorded": []
+      },
+      "matched_database": true,
+      "checks": [
+        {
+          "field": "as_of",
+          "tool_value": "2026-08-31",
+          "db_value": "2026-08-31",
+          "query": "SELECT date_today FROM desk",
+          "match": true
+        },
+        {
+          "field": "cash_accounts",
+          "tool_value": [
+            {
+              "name": "checking",
+              "balance": 3400,
+              "date": "2026-08-31"
+            }
+          ],
+          "db_value": [
+            {
+              "name": "checking",
+              "balance": 3400.0,
+              "date": "2026-08-31"
+            }
+          ],
+          "query": "SELECT name,balance,date FROM cash_accounts",
+          "match": true
+        },
+        {
+          "field": "total_cash",
+          "tool_value": 3400,
+          "db_value": 3400.0,
+          "query": "SUM(balance) FROM cash_accounts",
+          "match": true
+        },
+        {
+          "field": "unpaid_invoices",
+          "tool_value": [
+            {
+              "id": 501,
+              "amount": 840,
+              "due_date": "2026-08-28",
+              "status": "open",
+              "description": "Rush reprint CC-TEE-WHITE S",
+              "vendor_name": "Bulldog Print Co",
+              "days_until_due": -3
+            }
+          ],
+          "db_value": [
+            {
+              "id": 501,
+              "amount": 840.0,
+              "due_date": "2026-08-28",
+              "status": "open",
+              "description": "Rush reprint CC-TEE-WHITE S",
+              "vendor_name": "Bulldog Print Co",
+              "days_until_due": -3
+            }
+          ],
+          "query": "SELECT i.id,i.amount,i.due_date,i.status,i.description,v.name AS vendor_name FROM invoices i JOIN vendors v ON v.id=i.vendor_id WHERE i.status!='paid' ORDER BY i.due_date (+ days_until_due)",
+          "match": true
+        },
+        {
+          "field": "lease_rent_due",
+          "tool_value": [
+            {
+              "id": 1,
+              "space_name": "Chapel Street shop",
+              "landlord": "Elm City Properties",
+              "monthly_rent": 2400,
+              "next_due": "2026-09-02",
+              "notes": null,
+              "days_until_due": 2
+            }
+          ],
+          "db_value": [
+            {
+              "id": 1,
+              "space_name": "Chapel Street shop",
+              "landlord": "Elm City Properties",
+              "monthly_rent": 2400.0,
+              "next_due": "2026-09-02",
+              "notes": null,
+              "days_until_due": 2
+            }
+          ],
+          "query": "SELECT id,space_name,landlord,monthly_rent,next_due,notes FROM leases ORDER BY next_due (+ days_until_due)",
+          "match": true
+        },
+        {
+          "field": "total_obligations",
+          "tool_value": 3240,
+          "db_value": 3240.0,
+          "query": "sum(unpaid invoice amounts) + sum(monthly_rent)",
+          "match": true
+        },
+        {
+          "field": "cash_after_all_obligations",
+          "tool_value": 160,
+          "db_value": 160.0,
+          "query": "total_cash - total_obligations",
+          "match": true
+        },
+        {
+          "field": "payments_recorded",
+          "tool_value": [],
+          "db_value": [],
+          "query": "SELECT * FROM payments",
+          "match": true
+        },
+        {
+          "field": "ticket_102_lease_due_in_2_days",
+          "tool_value": 2,
+          "db_value": 2,
+          "query": "SELECT id,lease_id,invoice_id,subject FROM tickets WHERE id=102 -> leases.next_due - desk.date_today",
+          "match": true
+        }
+      ]
+    },
+    {
+      "ticket": 103,
+      "prompt": "ticket 103 wants 20 navy hoodies with a bulk discount. what are the cost, list price and margin?",
+      "mcp_tool": "mcp__campus-customs__get_pricing",
+      "arguments": {
+        "sku": "CC-HOOD-NAVY",
+        "qty": 20
+      },
+      "tool_output": {
+        "found": true,
+        "sku": "CC-HOOD-NAVY",
+        "name": "Basic Hoodie Big Yale",
+        "unit_cost": 22,
+        "list_price": 58,
+        "unit_margin": 36,
+        "margin_pct_of_list": 62.1,
+        "qty": 20,
+        "total_cost": 440,
+        "total_at_list": 1160,
+        "total_margin_at_list": 720,
+        "stock_by_size": [
+          {
+            "size": "S",
+            "qty": 4
+          },
+          {
+            "size": "M",
+            "qty": 8
+          },
+          {
+            "size": "L",
+            "qty": 14
+          },
+          {
+            "size": "XL",
+            "qty": 6
+          }
+        ]
+      },
+      "matched_database": true,
+      "checks": [
+        {
+          "field": "name",
+          "tool_value": "Basic Hoodie Big Yale",
+          "db_value": "Basic Hoodie Big Yale",
+          "query": "SELECT p.sku,p.unit_cost,p.list_price,(SELECT name FROM inventory WHERE sku=p.sku LIMIT 1) AS name FROM pricing p WHERE sku='CC-HOOD-NAVY'",
+          "match": true
+        },
+        {
+          "field": "unit_cost",
+          "tool_value": 22,
+          "db_value": 22.0,
+          "query": "SELECT p.sku,p.unit_cost,p.list_price,(SELECT name FROM inventory WHERE sku=p.sku LIMIT 1) AS name FROM pricing p WHERE sku='CC-HOOD-NAVY' (computed for qty=20)",
+          "match": true
+        },
+        {
+          "field": "list_price",
+          "tool_value": 58,
+          "db_value": 58.0,
+          "query": "SELECT p.sku,p.unit_cost,p.list_price,(SELECT name FROM inventory WHERE sku=p.sku LIMIT 1) AS name FROM pricing p WHERE sku='CC-HOOD-NAVY' (computed for qty=20)",
+          "match": true
+        },
+        {
+          "field": "unit_margin",
+          "tool_value": 36,
+          "db_value": 36.0,
+          "query": "SELECT p.sku,p.unit_cost,p.list_price,(SELECT name FROM inventory WHERE sku=p.sku LIMIT 1) AS name FROM pricing p WHERE sku='CC-HOOD-NAVY' (computed for qty=20)",
+          "match": true
+        },
+        {
+          "field": "margin_pct_of_list",
+          "tool_value": 62.1,
+          "db_value": 62.1,
+          "query": "SELECT p.sku,p.unit_cost,p.list_price,(SELECT name FROM inventory WHERE sku=p.sku LIMIT 1) AS name FROM pricing p WHERE sku='CC-HOOD-NAVY' (computed for qty=20)",
+          "match": true
+        },
+        {
+          "field": "total_cost",
+          "tool_value": 440,
+          "db_value": 440.0,
+          "query": "SELECT p.sku,p.unit_cost,p.list_price,(SELECT name FROM inventory WHERE sku=p.sku LIMIT 1) AS name FROM pricing p WHERE sku='CC-HOOD-NAVY' (computed for qty=20)",
+          "match": true
+        },
+        {
+          "field": "total_at_list",
+          "tool_value": 1160,
+          "db_value": 1160.0,
+          "query": "SELECT p.sku,p.unit_cost,p.list_price,(SELECT name FROM inventory WHERE sku=p.sku LIMIT 1) AS name FROM pricing p WHERE sku='CC-HOOD-NAVY' (computed for qty=20)",
+          "match": true
+        },
+        {
+          "field": "total_margin_at_list",
+          "tool_value": 720,
+          "db_value": 720.0,
+          "query": "SELECT p.sku,p.unit_cost,p.list_price,(SELECT name FROM inventory WHERE sku=p.sku LIMIT 1) AS name FROM pricing p WHERE sku='CC-HOOD-NAVY' (computed for qty=20)",
+          "match": true
+        },
+        {
+          "field": "stock_by_size",
+          "tool_value": {
+            "S": 4,
+            "M": 8,
+            "L": 14,
+            "XL": 6
+          },
+          "db_value": {
+            "L": 14,
+            "M": 8,
+            "S": 4,
+            "XL": 6
+          },
+          "query": "SELECT size,qty FROM inventory WHERE sku='CC-HOOD-NAVY' (compared by size)",
+          "match": true
+        }
+      ]
+    }
+  ],
+  "database_hashes": {
+    "data/campus_customs.db": {
+      "sha256": "23686a90d698f7fa6f901a3f0a9774db9cbb31e13151c9e5717275f3321f360a",
+      "matches_claude_md": true
+    },
+    "data/campus_customs_new.db": {
+      "sha256": "23686a90d698f7fa6f901a3f0a9774db9cbb31e13151c9e5717275f3321f360a",
+      "matches_claude_md": true
+    }
+  }
+}
